@@ -10,8 +10,16 @@ function App() {
 
   const filteredHeroes = useMemo(() => {
     return heroes.filter(hero => {
-      if (searchTerm && !hero.name.toLowerCase().includes(searchTerm.toLowerCase())) {
-        return false;
+      if (searchTerm) {
+        const searchTermLower = searchTerm.toLowerCase();
+        const heroNameMatch = hero.name.toLowerCase().includes(searchTermLower);
+        const abilityNameMatch = hero.abilities.some(ability => 
+          ability.name.toLowerCase().includes(searchTermLower)
+        );
+        
+        if (!heroNameMatch && !abilityNameMatch) {
+          return false;
+        }
       }
 
       if (selectedAttribute !== 'all' && hero.attribute !== selectedAttribute) {
@@ -25,7 +33,6 @@ function App() {
         if (!hasUpgradeType) return false;
       }
 
-      // Фильтр по типу способности (видно уровень/видно прокачена ли)
       if (selectedAbilityType !== 'all') {
         const hasAbilityType = hero.abilities.some(ability => 
           ability.type === selectedAbilityType
